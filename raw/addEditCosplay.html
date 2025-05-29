@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- Meta tags -->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<!-- jQuery -->
+		<script src="https://releases.jquery.com/git/jquery-3.x-git.min.js" crossorigin="anonymous"></script>
+
+		<!-- Bootstrap CSS -->
+		<link
+			href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+			rel="stylesheet"
+			integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+			crossorigin="anonymous"
+		/>
+
+		<!-- Custom CSS -->
+		<style>
+			/* Prevent scrolling */
+			html,
+			body {
+				overflow: hidden;
+				height: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col"><p>Add/Edit Cosplay</p></div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<div class="input-group mb-3">
+						<span class="input-group-text" id="inputGroup-sizing-default">Name</span>
+						<input type="text" name="name" id="name" class="form-control" aria-label="Name" />
+					</div>
+				</div>
+				<div class="col">
+					<div class="input-group mb-3">
+						<span class="input-group-text" id="inputGroup-sizing-default">Thumbnail</span>
+						<input type="text" name="thumbSrc" id="thumbSrc" class="form-control" aria-label="Thumbnail" />
+					</div>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col">
+					<button type="button" id="submit" class="btn btn-primary">Add</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Bootstrap JS -->
+		<script
+			src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+			integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+			crossorigin="anonymous"
+		></script>
+	</body>
+</html>
+
+<script type="module">
+	import lsh from "./js/localStorageHelper.js";
+
+	$(document).ready(function () {
+		// init
+		const queryString = window.location.search;
+		const urlParams = new URLSearchParams(queryString);
+		const id = urlParams.get("id");
+		console.log(id);
+
+		if (id) {
+			const cosplayList = lsh.get("cosplayList");
+			const cosplay = cosplayList[id];
+			if (cosplay) {
+				if (cosplay.name) $("#name").val(cosplay.name);
+				if (cosplay.thumbSrc) $("#thumbSrc").val(cosplay.thumbSrc);
+			}
+		}
+
+		// handlers
+
+		$("#submit").on("click", function () {
+			console.log("submit click");
+			const nameVal = $("#name").val(),
+				thumbSrcVal = $("#thumbSrc").val();
+
+			let isValid = true;
+			if (!nameVal) {
+				isValid = false;
+				console.log("nameVal: ", nameVal);
+			} else if (!thumbSrcVal) {
+				isValid = false;
+				console.log("thumbSrcVal: ", thumbSrcVal);
+			}
+
+			if (isValid) {
+				console.log("isValid");
+				// submit
+				const id = lsh.addToObject(
+					{
+						name: nameVal,
+						thumbSrc: thumbSrcVal,
+					},
+					"cosplayList"
+				);
+
+				//window.location.replace("./cosplay.html?id=");
+			} else {
+				console.log("is not valid");
+			}
+		});
+	});
+</script>
