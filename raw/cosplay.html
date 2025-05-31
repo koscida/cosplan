@@ -18,23 +18,84 @@
 
 		<!-- Custom CSS -->
 		<style>
-			/* Prevent scrolling */
-			html,
-			body {
-				overflow: hidden;
-				height: 100%;
+			.photoGrid {
+			}
+			.photoGrid-row {
+				display: flex;
+				flex-wrap: wrap;
+				padding: 0 4px;
+			}
+			.photoGrid-column {
+				flex: 50%;
+				padding: 0 4px;
+			}
+			.photoGrid-column img {
+				margin-top: 8px;
+				vertical-align: middle;
 			}
 		</style>
 	</head>
 	<body>
+		<header id="header"></header>
+
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col"><p>Cosplay</p></div>
+				<div class="d-flex flex-row" style="gap: 20px">
+					<img src="" id="thumbnail" />
+					<h2 id="name"></h2>
+				</div>
 			</div>
+
+			<hr />
 
 			<div class="row">
 				<div class="col">
-					<a href="./addEditCosplay.html?id=" class="btn btn-primary">Edit Card</a>
+					<div class="d-flex flex-row justify-content-between">
+						<h3>Images</h3>
+						<button id="addImage" class="btn btn-primary">Add Image</button>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<div class="photoGrid" style="height: 600px; overflow-y: scroll">
+						<div class="photoGrid-row">
+							<div class="photoGrid-column">
+								<img src="wedding.jpg" />
+								<img src="rocks.jpg" />
+								<img src="falls2.jpg" />
+								<img src="paris.jpg" />
+								<img src="nature.jpg" />
+								<img src="mist.jpg" />
+								<img src="paris.jpg" />
+							</div>
+							<div class="photoGrid-column">
+								<img src="underwater.jpg" />
+								<img src="ocean.jpg" />
+								<img src="wedding.jpg" />
+								<img src="mountainskies.jpg" />
+								<img src="rocks.jpg" />
+								<img src="underwater.jpg" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<hr />
+
+			<div class="row">
+				<div class="col">
+					<div class="d-flex flex-row justify-content-between">
+						<h3>Planner</h3>
+						<button id="addPlannerItem" class="btn btn-primary">Add Item</button>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col">
+					<img src="" id="thumbnail" height="50" />
+					<h3 id="name"></h3>
 				</div>
 			</div>
 		</div>
@@ -45,6 +106,9 @@
 			integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
 			crossorigin="anonymous"
 		></script>
+
+		<!-- Main CS -->
+		<script src="js/main.js"></script>
 	</body>
 </html>
 
@@ -56,9 +120,21 @@
 		const queryString = window.location.search;
 		const urlParams = new URLSearchParams(queryString);
 		const id = urlParams.get("id");
-		console.log(id);
 
+		// validate url params
 		if (id) {
+			// load in data
+			const cosplay = lsh.getByID("cosplayList", id);
+			const cosplayData = lsh.getByID("cosplays", id);
+
+			// validate data
+			if (!cosplay) window.location.replace("./index.html");
+
+			// replace data
+			$("#name").text(cosplay.name);
+			$("#thumbnail").attr("src", cosplay.thumbSrc).attr("height", "50px");
+		} else {
+			window.location.replace("./index.html");
 		}
 	});
 </script>

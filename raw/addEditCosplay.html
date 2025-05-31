@@ -16,20 +16,15 @@
 			crossorigin="anonymous"
 		/>
 
-		<!-- Custom CSS -->
-		<style>
-			/* Prevent scrolling */
-			html,
-			body {
-				overflow: hidden;
-				height: 100%;
-			}
-		</style>
+		<!-- Main CS -->
+		<script src="js/main.js"></script>
 	</head>
 	<body>
+		<header id="header"></header>
+
 		<div class="container-fluid">
 			<div class="row">
-				<div class="col"><p>Add/Edit Cosplay</p></div>
+				<div class="col"><p id="title">Add/Edit Cosplay</p></div>
 			</div>
 
 			<div class="row">
@@ -73,6 +68,7 @@
 		const id = urlParams.get("id");
 		console.log(id);
 
+		let title = "Add/Edit Cosplay";
 		if (id) {
 			const cosplayList = lsh.get("cosplayList");
 			const cosplay = cosplayList[id];
@@ -80,39 +76,14 @@
 				if (cosplay.name) $("#name").val(cosplay.name);
 				if (cosplay.thumbSrc) $("#thumbSrc").val(cosplay.thumbSrc);
 			}
+
+			title = "Edit Cosplay";
+		} else {
+			title = "Add Cosplay";
 		}
 
+		$("#title").text(title);
+
 		// handlers
-
-		$("#submit").on("click", function () {
-			console.log("submit click");
-			const nameVal = $("#name").val(),
-				thumbSrcVal = $("#thumbSrc").val();
-
-			let isValid = true;
-			if (!nameVal) {
-				isValid = false;
-				console.log("nameVal: ", nameVal);
-			} else if (!thumbSrcVal) {
-				isValid = false;
-				console.log("thumbSrcVal: ", thumbSrcVal);
-			}
-
-			if (isValid) {
-				console.log("isValid");
-				// submit
-				const id = lsh.addToObject(
-					{
-						name: nameVal,
-						thumbSrc: thumbSrcVal,
-					},
-					"cosplayList"
-				);
-
-				//window.location.replace("./cosplay.html?id=");
-			} else {
-				console.log("is not valid");
-			}
-		});
 	});
 </script>

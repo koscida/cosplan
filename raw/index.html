@@ -17,39 +17,59 @@
 		/>
 
 		<!-- Custom CSS -->
-		<style>
-			/* Prevent scrolling */
-			html,
-			body {
-				overflow: hidden;
-				height: 100%;
-			}
-		</style>
+		<style></style>
 	</head>
 	<body>
+		<header id="header"></header>
+
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col"><p>Cosplays</p></div>
 			</div>
 
-			<div class="row">
-				<div class="col">
-					<ul id="list">
-						<div class="card" style="width: 18rem">
-							<img src="..." class="card-img-top" alt="..." />
-							<div class="card-body">
-								<h5 class="card-title">Loading...</h5>
-								<p class="card-text">Loading...</p>
-								<a href="#" class="btn btn-primary">Loading...</a>
-							</div>
+			<div id="list" class="row">
+				<div class="col-sm-6">
+					<div class="card" style="width: 18rem">
+						<img src="..." class="card-img-top" alt="..." />
+						<div class="card-body">
+							<h5 class="card-title">Loading...</h5>
+							<p class="card-text">Loading...</p>
+							<a href="#" class="btn btn-primary">Loading...</a>
 						</div>
-					</ul>
+					</div>
 				</div>
 			</div>
 
 			<div class="row">
 				<div class="col">
-					<a href="./addCosplay.html" class="btn btn-primary">New</a>
+					<button id="addNewCosplay" class="btn btn-primary">Add New</button>
+				</div>
+			</div>
+
+			<div id="addSection" class="py-2" style="display: none">
+				<h3>Add New Cosplay</h3>
+				<div class="row">
+					<div class="col">
+						<div class="mb-3">
+							<label for="name" class="form-label">Name</label>
+							<input type="text" name="name" id="name" class="form-control" aria-label="Name" />
+						</div>
+					</div>
+					<div class="col">
+						<div class="mb-3">
+							<label for="thumbSrc" class="form-label">Thumbnail</label>
+							<div class="input-group mb-3">
+								<input type="text" name="thumbSrc" id="thumbSrc" class="form-control" aria-label="Thumbnail" />
+								<button class="btn btn-outline-secondary" type="button" id="selectImage">Image</button>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col">
+						<button type="button" id="submit" class="btn btn-primary">Add</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -60,6 +80,9 @@
 			integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
 			crossorigin="anonymous"
 		></script>
+
+		<!-- Main CS -->
+		<script src="js/main.js"></script>
 	</body>
 </html>
 
@@ -67,35 +90,71 @@
 	import lsh from "./js/localStorageHelper.js";
 
 	$(document).ready(function () {
+		// init
 		function init() {
 			// Get cosplays from localstorage
 			const cosplayList = lsh.get("cosplayList");
-			console.log("cosplayList: ", cosplayList);
 
 			$("#list").html("");
 
 			if (cosplayList) {
 				const cosplayArr = Object.entries(cosplayList);
-				console.log("cosplayArr: ", cosplayArr);
-
 				const cosplayHTML = cosplayArr.reduce((html, [id, { name, thumbSrc }]) => {
 					return (
 						html +
-						`<div class="card" style="width: 18rem">
-					<img src="${thumbSrc}" class="card-img-top" alt="..." />
-					<div class="card-body">
-						<h5 class="card-title">${name}</h5>
-						<a href="./cosplay.html?id=${id}" class="btn btn-primary">Edit</a>
-					</div>
-				</div>`
+						`<div class="col">
+							<div class="card" style="width: 18rem">
+								<img src="${thumbSrc}" class="card-img-top" />
+								<div class="card-body">
+									<h5 class="card-title">${name}</h5>
+									<a href="./cosplay.html?id=${id}" class="btn btn-primary">Edit</a>
+								</div>
+							</div>
+						</div>`
 					);
 				}, "");
-				console.log("cosplayHTML: ", cosplayHTML);
 				$("#list").html(cosplayHTML);
 			} else {
-				$("#list").html("[[No cosplays]]");
+				$("#list").html(`<div class="col">[[No cosplays]]</div>`);
 			}
 		}
 		init();
+
+		// handlers
+
+		$("#addNewCosplay").on("click", function () {
+			$("#addSection").toggle();
+		});
+
+		$("#submit").on("click", function () {
+			console.log("submit click");
+			const nameVal = $("#name").val(),
+				thumbSrcVal = $("#thumbSrc").val();
+
+			let isValid = true;
+			if (!nameVal) {
+				isValid = false;
+				console.log("nameVal: ", nameVal);
+			} else if (!thumbSrcVal) {
+				isValid = false;
+				console.log("thumbSrcVal: ", thumbSrcVal);
+			}
+
+			if (isValid) {
+				console.log("isValid");
+				// submit
+				const id = lsh.addToObject(
+					{
+						name: nameVal,
+						thumbSrc: thumbSrcVal,
+					},
+					"cosplayList"
+				);
+
+				window.location.replace("./cosplay.html?id=" + id);
+			} else {
+				console.log("is not valid");
+			}
+		});
 	});
 </script>
